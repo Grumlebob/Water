@@ -6,7 +6,7 @@ public class FordFulkerson {
 
     public FordFulkerson(FlowNetwork G, int s, int t) {
         V = G.V();
-        if (s == t)               throw new IllegalArgumentException("Source equals sink");
+        if (s == t) throw new IllegalArgumentException("Source equals sink");
 
         // while there exists an augmenting path, use it
         value = excess(G, t);
@@ -25,14 +25,10 @@ public class FordFulkerson {
         }
     }
 
-    public double maxFlow()  {
+    public double maxFlow() {
         return value;
     }
 
-    // is there an augmenting path?
-    // if so, upon termination edgeTo[] will contain a parent-link representation of such a path
-    // this implementation finds a shortest augmenting path (fewest number of edges),
-    // which performs well both in theory and in practice
     private boolean hasAugmentingPath(FlowNetwork G, int s, int t) {
         edgeTo = new FlowEdge[G.V()];
         marked = new boolean[G.V()];
@@ -61,16 +57,13 @@ public class FordFulkerson {
         return marked[t];
     }
 
-
     // return excess flow at vertex v
     private double excess(FlowNetwork G, int v) {
         double excess = 0.0;
         for (FlowEdge e : G.adj(v)) {
             if (v == e.from()) excess -= e.flow();
-            else               excess += e.flow();
+            else excess += e.flow();
         }
         return excess;
     }
-
-
 }

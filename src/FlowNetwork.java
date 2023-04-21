@@ -43,6 +43,15 @@ public class FlowNetwork {
         E++;
     }
 
+    //Create method to reset all flows to 0
+    public void resetFlows() {
+        for (int v = 0; v < V; v++) {
+            for (FlowEdge e : adj2D.get(v)) {
+                e.flow = 0;
+            }
+        }
+    }
+
     public Iterable<FlowEdge> adj(int v) {
         return adj2D.get(v);
     }

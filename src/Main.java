@@ -12,17 +12,11 @@ public class Main {
 
         String[] input = br.readLine().split(" ");
 
-        /*
-        first line:
-        n < 100    - Number of stations (vertices)
-        p < n^2    - Number of pipes (edges)
-        k < 10000  - number of improvements
-         */
-        int numberOfStations = Integer.parseInt(input[0]);
-        int NumberOfPipes = Integer.parseInt(input[1]);
-        int NumberOfImprovements = Integer.parseInt(input[2]);
+        int numberOfStations = Integer.parseInt(input[0]); //n < 100    - Number of stations (vertices)
+        int NumberOfPipes = Integer.parseInt(input[1]); //p < n^2    - Number of pipes (edges)
+        int NumberOfImprovements = Integer.parseInt(input[2]); //k < 10000  - number of improvements
 
-        var flowNetwork = new FlowNetwork(numberOfStations+1);
+        var flowNetwork = new FlowNetwork(numberOfStations + 1);
 
         //Add initial pipes
         for (int i = 0; i < NumberOfPipes; i++) {
@@ -44,11 +38,7 @@ public class Main {
 
         //k-Improvements
         for (int i = 0; i < NumberOfImprovements; i++) {
-            for (int g = 0; g < flowNetwork.adj2D.size(); g++) {
-                for (int j = 0; j < flowNetwork.adj2D.get(g).size(); j++) {
-                    flowNetwork.adj2D.get(g).get(j).flow = 0;
-                }
-            }
+            flowNetwork.resetFlows();
             String[] ImprovementInput = br.readLine().split(" ");
             int improvementA = Integer.parseInt(ImprovementInput[0]);
             int improvementB = Integer.parseInt(ImprovementInput[1]);
