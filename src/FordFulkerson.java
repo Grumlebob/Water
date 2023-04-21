@@ -23,7 +23,6 @@ public class FordFulkerson {
         validate(s);
         validate(t);
         if (s == t)               throw new IllegalArgumentException("Source equals sink");
-        if (!isFeasible(G, s, t)) throw new IllegalArgumentException("Initial flow is infeasible");
 
         // while there exists an augmenting path, use it
         value = excess(G, t);
@@ -121,50 +120,10 @@ public class FordFulkerson {
         return excess;
     }
 
-    // return excess flow at vertex v
-    private boolean isFeasible(FlowNetwork G, int s, int t) {
-
-        // check that capacity constraints are satisfied
-        for (int v = 0; v < G.V(); v++) {
-            for (FlowEdge e : G.adj(v)) {
-                if (e.flow() < -FLOATING_POINT_EPSILON || e.flow() > e.capacity() + FLOATING_POINT_EPSILON) {
-                    System.err.println("Edge does not satisfy capacity constraints: " + e);
-                    return false;
-                }
-            }
-        }
-
-        // check that net flow into a vertex equals zero, except at source and sink
-        if (Math.abs(value + excess(G, s)) > FLOATING_POINT_EPSILON) {
-            System.err.println("Excess at source = " + excess(G, s));
-            System.err.println("Max flow         = " + value);
-            return false;
-        }
-        if (Math.abs(value - excess(G, t)) > FLOATING_POINT_EPSILON) {
-            System.err.println("Excess at sink   = " + excess(G, t));
-            System.err.println("Max flow         = " + value);
-            return false;
-        }
-        for (int v = 0; v < G.V(); v++) {
-            if (v == s || v == t) continue;
-            else if (Math.abs(excess(G, v)) > FLOATING_POINT_EPSILON) {
-                System.err.println("Net flow out of " + v + " doesn't equal zero");
-                return false;
-            }
-        }
-        return true;
-    }
-
 
 
     // check optimality conditions
     private boolean check(FlowNetwork G, int s, int t) {
-
-        // check that flow is feasible
-        if (!isFeasible(G, s, t)) {
-            System.err.println("Flow is infeasible");
-            return false;
-        }
 
         // check that s is on the source side of min cut and that t is not on source side
         if (!inCut(s)) {

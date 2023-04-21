@@ -19,7 +19,7 @@ public class Main {
         int NumberOfPipes = Integer.parseInt(input[1]);
         int NumberOfImprovements = Integer.parseInt(input[2]);
 
-        var flowNetwork = new FlowNetwork(numberOfStations*2);
+        var flowNetwork = new FlowNetwork(numberOfStations+1);
 
         //Source
         String[] sourceInput = br.readLine().split(" "); //1 3 10  a to b with capacity 10
@@ -36,46 +36,30 @@ public class Main {
         flowNetwork.addEdgeToUndirectedGraph(destinationA, destinationB, destinationCapacity);
 
         //Add initial pipes
+        for (int i = 2; i < NumberOfPipes; i++) {
+            String[] pipeInput = br.readLine().split(" ");
+            int pipeA = Integer.parseInt(pipeInput[0]);
+            int pipeB = Integer.parseInt(pipeInput[1]);
+            int pipeCapacity = Integer.parseInt(pipeInput[2]);
+            flowNetwork.addEdgeToUndirectedGraph(pipeA, pipeB, pipeCapacity);
+        }
+
+        final int source = 1;
+        final int sink = 2;
 
         //Print initial maxflow
-        //Clone of flowNetwork
+        FordFulkerson ff = new FordFulkerson(flowNetwork, source, sink);
+        System.out.println((int) ff.value());
 
-        //FordFulkerson ff = new FordFulkerson(flowNetwork, sourceA, destinationA);
-        //System.out.println(ff.value());
-        for (FlowEdge e : flowNetwork.edges()) {
-            System.out.println(e);
+        //k-Improvements
+        for (int i = 0; i < NumberOfImprovements; i++) {
+            String[] ImprovementInput = br.readLine().split(" ");
+            int improvementA = Integer.parseInt(ImprovementInput[0]);
+            int improvementB = Integer.parseInt(ImprovementInput[1]);
+            int improvementCapacity = Integer.parseInt(ImprovementInput[2]);
+            flowNetwork.addEdgeToUndirectedGraph(improvementA, improvementB, improvementCapacity);
+            ff = new FordFulkerson(flowNetwork, source, sink);
+            System.out.println((int) ff.value());
         }
-
-        String[] ImprovementInput = br.readLine().split(" ");
-        int improvementA = Integer.parseInt(ImprovementInput[0]);
-        int improvementB = Integer.parseInt(ImprovementInput[1]);
-        int improvementCapacity = Integer.parseInt(ImprovementInput[2]);
-        flowNetwork.addEdgeToUndirectedGraph(improvementA, improvementB, improvementCapacity);
-
-
-        FordFulkerson Otherff = new FordFulkerson(flowNetwork, sourceA, destinationA);
-        for (FlowEdge e : flowNetwork.edges()) {
-            System.out.println(e);
-        }
-
-        System.out.println(Otherff.value());
-
-
-        //for (FlowEdge e : flowNetwork.edges()) {
-        //    System.out.println(e);
-        //}
-
-        ////k-Improvements
-        //for (int i = 0; i < NumberOfImprovements; i++) {
-        //    String[] ImprovementInput = br.readLine().split(" ");
-        //    int improvementA = Integer.parseInt(ImprovementInput[0]);
-        //    int improvementB = Integer.parseInt(ImprovementInput[1]);
-        //    int improvementCapacity = Integer.parseInt(ImprovementInput[2]);
-        //    flowNetwork.addEdgeToUndirectedGraph(improvementA, improvementB, improvementCapacity);
-        //    ff = new FordFulkerson(flowNetwork, sourceA, destinationA);
-        //    System.out.println(ff.value());
-        //}
-
-
     }
 }
