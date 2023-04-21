@@ -28,7 +28,7 @@ public class FordFulkerson {
         }
     }
 
-    public double maxFlow() {
+    public int maxFlow() {
         return value;
     }
 
