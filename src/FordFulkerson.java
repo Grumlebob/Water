@@ -30,28 +30,29 @@ public class FordFulkerson {
         edgeTo = new FlowEdge[G.V()];
         marked = new boolean[G.V()];
 
-        ArrayQueue<Integer> queue = new ArrayQueue<Integer>(G.V()); //has O(1) enqueue and dequeue operations
+        ArrayQueue<Integer> queue = new ArrayQueue<>(G.V());
         queue.enqueue(s);
         marked[s] = true;
-        while (!queue.isEmpty() && !marked[t]) {
+
+        while (!queue.isEmpty()) {
             int v = queue.dequeue();
 
             for (FlowEdge e : G.adj(v)) {
                 int w = e.other(v);
 
                 // if residual capacity from v to w
-                if (e.residualCapacityTo(w) > 0) {
-                    if (!marked[w]) {
-                        edgeTo[w] = e;
-                        marked[w] = true;
-                        queue.enqueue(w);
-                    }
+                if (e.residualCapacityTo(w) > 0 && !marked[w]) {
+                    edgeTo[w] = e;
+                    marked[w] = true;
+                    if (w == t) return true; // stop BFS as soon as path to t is found
+                    queue.enqueue(w);
                 }
             }
         }
-        // is there an augmenting path?
-        return marked[t];
+        // no augmenting path found
+        return false;
     }
+
 
     private int excess(FlowNetwork G, int v) {
         int excess = 0;
@@ -65,7 +66,8 @@ public class FordFulkerson {
     private int bottleneck(FlowNetwork G, int s, int t) {
         int bottle = Integer.MAX_VALUE;
         for (int v = t; v != s; v = edgeTo[v].other(v)) {
-            bottle = Math.min(bottle, edgeTo[v].residualCapacityTo(v));
+            int residualCapacity = edgeTo[v].residualCapacityTo(v);
+            bottle = Math.min(bottle, residualCapacity);
         }
         return bottle;
     }
