@@ -2,12 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FlowNetwork {
-    private static final String NEWLINE = System.getProperty("line.separator");
     private final int V;
     private int E;
-
     public List<List<FlowEdge>> adj2D = new ArrayList<List<FlowEdge>>();
-
     public FlowNetwork(int V) {
         if (V < 0) throw new IllegalArgumentException("Number of vertices in a Graph must be non-negative");
         this.V = V;
@@ -16,15 +13,9 @@ public class FlowNetwork {
         for (int v = 0; v < V; v++)
             adj2D.add(new ArrayList<FlowEdge>());
     }
-
     public int V() {
         return V;
     }
-
-    public int E() {
-        return E;
-    }
-
 
     public void addOrUpdateEdgeToUndirectedGraph(int tailVertex, int headVertex, double capacity) {
         var oneDirection = new FlowEdge(tailVertex, headVertex, capacity);
@@ -32,12 +23,11 @@ public class FlowNetwork {
         //Check if the edge already exists, if so update the capacity
         for (FlowEdge e : adj2D.get(tailVertex)) {
             if (e.to() == tailVertex && e.from() == headVertex) {
-                e.capacity = capacity;
-                adj2D.get(headVertex).get(tailVertex).capacity = capacity;
-                if (e.flow > capacity) {
-                    e.flow = capacity;
-                    adj2D.get(headVertex).get(tailVertex).flow = 0;
-                }
+                e.capacity += capacity;
+                adj2D.get(headVertex).get(tailVertex).capacity += capacity;
+                //Reset current flow, from previous calculation
+                e.flow = 0;
+                adj2D.get(headVertex).get(tailVertex).flow = 0;
                 return;
             }
         }
@@ -53,20 +43,8 @@ public class FlowNetwork {
         E++;
     }
 
-
     public Iterable<FlowEdge> adj(int v) {
         return adj2D.get(v);
-    }
-
-    // return list of all edges - excludes self loops
-    public Iterable<FlowEdge> edges() {
-        List<FlowEdge> list = new ArrayList<>();
-        for (int v = 0; v < V; v++)
-            for (FlowEdge e : adj(v)) {
-                if (e.to() != v)
-                    list.add(e);
-            }
-        return list;
     }
 
 }

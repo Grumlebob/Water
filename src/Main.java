@@ -35,16 +35,15 @@ public class Main {
 
         //Print initial maxflow
         FordFulkerson ff = new FordFulkerson(flowNetwork, source, sink);
-        System.out.println((int) ff.value());
-        for (int l = 0; l < flowNetwork.adj2D.size(); l++) {
-            for (int j = 0; j < flowNetwork.adj2D.get(l).size(); j++) {
-                System.out.println(flowNetwork.adj2D.get(l).get(j).toString());
-            }
-        }
+        System.out.println((int) ff.maxFlow());
+        //for (int l = 0; l < flowNetwork.adj2D.size(); l++) {
+        //    for (int j = 0; j < flowNetwork.adj2D.get(l).size(); j++) {
+        //        System.out.println(flowNetwork.adj2D.get(l).get(j).toString());
+        //    }
+        //}
 
         //k-Improvements
         for (int i = 0; i < NumberOfImprovements; i++) {
-            ff.calculateNewValue(flowNetwork, source, sink);
             for (int g = 0; g < flowNetwork.adj2D.size(); g++) {
                 for (int j = 0; j < flowNetwork.adj2D.get(g).size(); j++) {
                     flowNetwork.adj2D.get(g).get(j).flow = 0;
@@ -56,13 +55,13 @@ public class Main {
             int improvementCapacity = Integer.parseInt(ImprovementInput[2]);
             flowNetwork.addOrUpdateEdgeToUndirectedGraph(improvementA, improvementB, improvementCapacity);
             FordFulkerson newff = new FordFulkerson(flowNetwork, source, sink);
-            System.out.println((int) newff.value());
+            System.out.println((int) newff.maxFlow());
             //print all edges with foreach loop
-            for (int l = 0; l < flowNetwork.adj2D.size(); l++) {
-                for (int j = 0; j < flowNetwork.adj2D.get(l).size(); j++) {
-                    System.out.println(flowNetwork.adj2D.get(l).get(j).toString());
-                }
-            }
+            //for (int l = 0; l < flowNetwork.adj2D.size(); l++) {
+            //    for (int j = 0; j < flowNetwork.adj2D.get(l).size(); j++) {
+            //        System.out.println(flowNetwork.adj2D.get(l).get(j).toString());
+            //    }
+            //}
         }
     }
 }
