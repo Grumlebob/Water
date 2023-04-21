@@ -17,7 +17,7 @@ public class FlowNetwork {
         return V;
     }
 
-    public void addOrUpdateEdgeToUndirectedGraph(int tailVertex, int headVertex, double capacity) {
+    public void addOrUpdateEdgeToUndirectedGraph(int tailVertex, int headVertex, int capacity) {
         var oneDirection = new FlowEdge(tailVertex, headVertex, capacity);
         var otherDirection = new FlowEdge(headVertex, tailVertex, capacity);
         //Check if the edge already exists, if so update the capacity

@@ -1,18 +1,16 @@
 
 public class FlowEdge {
     // to deal with floating-point roundoff errors
-    private static final double FLOATING_POINT_EPSILON = 1.0E-10;
+    private final int v;            // from
+    private final int w;            // to
+    public int capacity;            // capacity
+    public int flow;                // flow
 
-    private final int v;             // from
-    private final int w;             // to
-    public double capacity;   // capacity
-    public double flow;             // flow
-
-    public FlowEdge(int tailVertex, int headVertex, double capacity) {
-        this.v         = tailVertex;
-        this.w         = headVertex;
-        this.capacity  = capacity;
-        this.flow      = 0.0;
+    public FlowEdge(int tailVertex, int headVertex, int capacity) {
+        this.v = tailVertex;
+        this.w = headVertex;
+        this.capacity = capacity;
+        this.flow = 0;
     }
 
     public int from() {
@@ -23,37 +21,51 @@ public class FlowEdge {
         return w;
     }
 
-    public double capacity() {
+    public int capacity() {
         return capacity;
     }
 
-    public double flow() {
+    public int flow() {
         return flow;
     }
 
     public int other(int vertex) {
-        if      (vertex == v) return w;
-        else if (vertex == w) return v;
-        else throw new IllegalArgumentException("invalid endpoint");
-    }
-    public double residualCapacityTo(int vertex) {
-        if      (vertex == v) return flow;              // backward edge
-        else if (vertex == w) return capacity - flow;   // forward edge
-        else throw new IllegalArgumentException("invalid endpoint");
+        if (vertex == v) {
+            return w;
+        } else if (vertex == w) {
+            return v;
+        } else {
+            throw new IllegalArgumentException("invalid endpoint");
+        }
     }
 
-    public void addResidualFlowTo(int vertex, double delta) {
-        if      (vertex == v) flow -= delta;           // backward edge
-        else if (vertex == w) flow += delta;           // forward edge
+    public int residualCapacityTo(int vertex) {
+        if (vertex == v) {
+            return flow;                // backward edge
+        } else if (vertex == w) {
+            return capacity - flow;     // forward edge
+        } else {
+            throw new IllegalArgumentException("invalid endpoint");
+        }
+    }
 
-        // round flow to 0 or capacity if within floating-point precision
-        if (Math.abs(flow) <= FLOATING_POINT_EPSILON)
+    public void addResidualFlowTo(int vertex, int delta) {
+        if (vertex == v) {
+            flow -= delta;              // backward edge
+        } else if (vertex == w) {
+            flow += delta;              // forward edge
+        } else {
+            throw new IllegalArgumentException("invalid endpoint");
+        }
+        // round flow to 0 or capacity if necessary
+        if (flow < 0) {
             flow = 0;
-        if (Math.abs(flow - capacity) <= FLOATING_POINT_EPSILON)
+        } else if (flow > capacity) {
             flow = capacity;
+        }
     }
+
     public String toString() {
         return v + "->" + w + " " + flow + "/" + capacity;
     }
-
 }

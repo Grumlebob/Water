@@ -1,3 +1,6 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class FordFulkerson {
     public int V;          // number of vertices
     public boolean[] marked;     // marked[v] = true iff s->v path in residual graph
@@ -12,7 +15,7 @@ public class FordFulkerson {
         value = excess(G, t);
         while (hasAugmentingPath(G, s, t)) {
             // compute bottleneck capacity
-            double bottle = Double.POSITIVE_INFINITY;
+            int bottle = Integer.MAX_VALUE;
             for (int v = t; v != s; v = edgeTo[v].other(v)) {
                 bottle = Math.min(bottle, edgeTo[v].residualCapacityTo(v));
             }
@@ -34,11 +37,12 @@ public class FordFulkerson {
         marked = new boolean[G.V()];
 
         // breadth-first search
-        Queue<Integer> queue = new Queue<Integer>();
-        queue.enqueue(s);
+        //Queue<Integer> queue = new Queue<Integer>();
+        Queue<Integer> queue = new LinkedList<Integer>();
+        queue.add(s);
         marked[s] = true;
         while (!queue.isEmpty() && !marked[t]) {
-            int v = queue.dequeue();
+            int v = queue.remove();
 
             for (FlowEdge e : G.adj(v)) {
                 int w = e.other(v);
@@ -48,7 +52,7 @@ public class FordFulkerson {
                     if (!marked[w]) {
                         edgeTo[w] = e;
                         marked[w] = true;
-                        queue.enqueue(w);
+                        queue.add(w);
                     }
                 }
             }
