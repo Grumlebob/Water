@@ -1,6 +1,3 @@
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class FordFulkerson {
     public int V;          // number of vertices
     public boolean[] marked;     // marked[v] = true iff s->v path in residual graph
@@ -37,12 +34,11 @@ public class FordFulkerson {
         marked = new boolean[G.V()];
 
         // breadth-first search
-        //Queue<Integer> queue = new Queue<Integer>();
-        Queue<Integer> queue = new LinkedList<Integer>();
-        queue.add(s);
+        Queue<Integer> queue = new Queue<Integer>();
+        queue.enqueue(s);
         marked[s] = true;
         while (!queue.isEmpty() && !marked[t]) {
-            int v = queue.remove();
+            int v = queue.dequeue();
 
             for (FlowEdge e : G.adj(v)) {
                 int w = e.other(v);
@@ -52,7 +48,7 @@ public class FordFulkerson {
                     if (!marked[w]) {
                         edgeTo[w] = e;
                         marked[w] = true;
-                        queue.add(w);
+                        queue.enqueue(w);
                     }
                 }
             }
@@ -61,7 +57,6 @@ public class FordFulkerson {
         return marked[t];
     }
 
-    // return excess flow at vertex v
     private int excess(FlowNetwork G, int v) {
         int excess = 0;
         for (FlowEdge e : G.adj(v)) {

@@ -29,12 +29,7 @@ public class Main {
 
         //Print initial maxflow
         FordFulkerson ff = new FordFulkerson(flowNetwork, source, sink);
-        System.out.println(ff.maxFlow());
-        //for (int l = 0; l < flowNetwork.adj2D.size(); l++) {
-        //    for (int j = 0; j < flowNetwork.adj2D.get(l).size(); j++) {
-        //        System.out.println(flowNetwork.adj2D.get(l).get(j).toString());
-        //    }
-        //}
+        var kattisResult = new StringBuilder().append(ff.maxFlow()).append("\n");
 
         //k-Improvements
         for (int i = 0; i < NumberOfImprovements; i++) {
@@ -44,14 +39,9 @@ public class Main {
             int improvementCapacity = Integer.parseInt(ImprovementInput[2]);
             flowNetwork.addOrUpdateEdgeToUndirectedGraph(improvementA, improvementB, improvementCapacity);
             FordFulkerson newff = new FordFulkerson(flowNetwork, source, sink);
-            System.out.println( newff.maxFlow());
-            //flowNetwork.resetFlows();
-            //print all edges with foreach loop
-            //for (int l = 0; l < flowNetwork.adj2D.size(); l++) {
-            //    for (int j = 0; j < flowNetwork.adj2D.get(l).size(); j++) {
-            //        System.out.println(flowNetwork.adj2D.get(l).get(j).toString());
-            //    }
-            //}
+            kattisResult.append(newff.maxFlow()).append("\n");
         }
+        //Print results
+        System.out.println(kattisResult.toString());
     }
 }
