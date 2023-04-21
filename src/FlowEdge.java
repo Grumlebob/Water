@@ -68,4 +68,10 @@ public class FlowEdge {
     public String toString() {
         return v + "->" + w + " " + flow + "/" + capacity;
     }
+
+    @Override
+    public int hashCode() {
+        return this.from() * 1000000 + this.to();
+    }
+
 }
