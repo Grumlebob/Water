@@ -64,6 +64,17 @@ public class FlowNetwork {
         E++;
     }
 
+    // return list of all edges - excludes self loops
+    public Iterable<FlowEdge> edges() {
+        List<FlowEdge> list = new ArrayList<>();
+        for (int v = 0; v < V; v++)
+            for (FlowEdge e : adj(v)) {
+                if (e.to() != v)
+                    list.add(e);
+            }
+        return list;
+    }
+
 
     public Iterable<FlowEdge> adj(int v) {
         return adj2D.get(v);

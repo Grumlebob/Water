@@ -9,13 +9,10 @@ public class FordFulkerson {
         if (s == t) throw new IllegalArgumentException("Source equals sink");
 
         // while there exists an augmenting path, use it
-        value = excess(G, t);
+        value = excess(G, s);
         while (hasAugmentingPath(G, s, t)) {
             // compute bottleneck capacity
-            int bottle = Integer.MAX_VALUE;
-            for (int v = t; v != s; v = edgeTo[v].other(v)) {
-                bottle = Math.min(bottle, edgeTo[v].residualCapacityTo(v));
-            }
+            int bottle = bottleneck(G, s, t);
             // augment flow
             for (int v = t; v != s; v = edgeTo[v].other(v)) {
                 edgeTo[v].addResidualFlowTo(v, bottle);
@@ -33,8 +30,7 @@ public class FordFulkerson {
         edgeTo = new FlowEdge[G.V()];
         marked = new boolean[G.V()];
 
-        // breadth-first search
-        Queue<Integer> queue = new Queue<Integer>();
+        ArrayQueue<Integer> queue = new ArrayQueue<Integer>(G.V()); //has O(1) enqueue and dequeue operations
         queue.enqueue(s);
         marked[s] = true;
         while (!queue.isEmpty() && !marked[t]) {
@@ -60,9 +56,17 @@ public class FordFulkerson {
     private int excess(FlowNetwork G, int v) {
         int excess = 0;
         for (FlowEdge e : G.adj(v)) {
-            if (v == e.from()) excess -= e.flow();
-            else excess += e.flow();
+            if (v == e.from()) excess += e.flow();
+            else excess -= e.flow();
         }
         return excess;
+    }
+
+    private int bottleneck(FlowNetwork G, int s, int t) {
+        int bottle = Integer.MAX_VALUE;
+        for (int v = t; v != s; v = edgeTo[v].other(v)) {
+            bottle = Math.min(bottle, edgeTo[v].residualCapacityTo(v));
+        }
+        return bottle;
     }
 }
