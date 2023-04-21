@@ -38,7 +38,6 @@ public class Main {
 
         //k-Improvements
         for (int i = 0; i < NumberOfImprovements; i++) {
-            flowNetwork.resetFlows();
             String[] ImprovementInput = br.readLine().split(" ");
             int improvementA = Integer.parseInt(ImprovementInput[0]);
             int improvementB = Integer.parseInt(ImprovementInput[1]);
@@ -46,7 +45,7 @@ public class Main {
             flowNetwork.addOrUpdateEdgeToUndirectedGraph(improvementA, improvementB, improvementCapacity);
             FordFulkerson newff = new FordFulkerson(flowNetwork, source, sink);
             System.out.println( newff.maxFlow());
-            flowNetwork.resetFlows();
+            //flowNetwork.resetFlows();
             //print all edges with foreach loop
             //for (int l = 0; l < flowNetwork.adj2D.size(); l++) {
             //    for (int j = 0; j < flowNetwork.adj2D.get(l).size(); j++) {
