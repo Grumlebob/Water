@@ -6,7 +6,7 @@ public class FlowEdge {
     private final int v;             // from
     private final int w;             // to
     public double capacity;   // capacity
-    private double flow;             // flow
+    public double flow;             // flow
 
     /**
      * Initializes an edge from vertex {@code v} to vertex {@code w} with

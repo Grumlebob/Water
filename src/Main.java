@@ -7,6 +7,9 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
+        final int source = 1;
+        final int sink = 2;
+
         String[] input = br.readLine().split(" ");
 
         /*
@@ -21,45 +24,45 @@ public class Main {
 
         var flowNetwork = new FlowNetwork(numberOfStations+1);
 
-        //Source
-        String[] sourceInput = br.readLine().split(" "); //1 3 10  a to b with capacity 10
-        int sourceA = Integer.parseInt(sourceInput[0]);
-        int sourceB = Integer.parseInt(sourceInput[1]);
-        int sourceCapacity = Integer.parseInt(sourceInput[2]);
-        flowNetwork.addEdgeToUndirectedGraph(sourceA, sourceB, sourceCapacity);
-
-        //Destination
-        String[] destinationInput = br.readLine().split(" "); //2 3 1  a to b with capacity 1
-        int destinationA = Integer.parseInt(destinationInput[0]);
-        int destinationB = Integer.parseInt(destinationInput[1]);
-        int destinationCapacity = Integer.parseInt(destinationInput[2]);
-        flowNetwork.addEdgeToUndirectedGraph(destinationA, destinationB, destinationCapacity);
-
         //Add initial pipes
-        for (int i = 2; i < NumberOfPipes; i++) {
+        for (int i = 0; i < NumberOfPipes; i++) {
             String[] pipeInput = br.readLine().split(" ");
             int pipeA = Integer.parseInt(pipeInput[0]);
             int pipeB = Integer.parseInt(pipeInput[1]);
             int pipeCapacity = Integer.parseInt(pipeInput[2]);
-            flowNetwork.addEdgeToUndirectedGraph(pipeA, pipeB, pipeCapacity);
+            flowNetwork.addOrUpdateEdgeToUndirectedGraph(pipeA, pipeB, pipeCapacity);
         }
-
-        final int source = 1;
-        final int sink = 2;
 
         //Print initial maxflow
         FordFulkerson ff = new FordFulkerson(flowNetwork, source, sink);
         System.out.println((int) ff.value());
+        for (int l = 0; l < flowNetwork.adj2D.size(); l++) {
+            for (int j = 0; j < flowNetwork.adj2D.get(l).size(); j++) {
+                System.out.println(flowNetwork.adj2D.get(l).get(j).toString());
+            }
+        }
 
         //k-Improvements
         for (int i = 0; i < NumberOfImprovements; i++) {
+            ff.calculateNewValue(flowNetwork, source, sink);
+            for (int g = 0; g < flowNetwork.adj2D.size(); g++) {
+                for (int j = 0; j < flowNetwork.adj2D.get(g).size(); j++) {
+                    flowNetwork.adj2D.get(g).get(j).flow = 0;
+                }
+            }
             String[] ImprovementInput = br.readLine().split(" ");
             int improvementA = Integer.parseInt(ImprovementInput[0]);
             int improvementB = Integer.parseInt(ImprovementInput[1]);
             int improvementCapacity = Integer.parseInt(ImprovementInput[2]);
-            flowNetwork.addEdgeToUndirectedGraph(improvementA, improvementB, improvementCapacity);
-            ff = new FordFulkerson(flowNetwork, source, sink);
-            System.out.println((int) ff.value());
+            flowNetwork.addOrUpdateEdgeToUndirectedGraph(improvementA, improvementB, improvementCapacity);
+            FordFulkerson newff = new FordFulkerson(flowNetwork, source, sink);
+            System.out.println((int) newff.value());
+            //print all edges with foreach loop
+            for (int l = 0; l < flowNetwork.adj2D.size(); l++) {
+                for (int j = 0; j < flowNetwork.adj2D.get(l).size(); j++) {
+                    System.out.println(flowNetwork.adj2D.get(l).get(j).toString());
+                }
+            }
         }
     }
 }

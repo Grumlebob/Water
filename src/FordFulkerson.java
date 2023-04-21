@@ -1,10 +1,9 @@
 public class FordFulkerson {
     private static final double FLOATING_POINT_EPSILON = 1.0E-11;
-
-    private final int V;          // number of vertices
-    private boolean[] marked;     // marked[v] = true iff s->v path in residual graph
-    private FlowEdge[] edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
-    private double value;         // current value of max flow
+    public int V;          // number of vertices
+    public boolean[] marked;     // marked[v] = true iff s->v path in residual graph
+    public FlowEdge[] edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
+    public double value;         // current value of max flow
 
     /**
      * Compute a maximum flow and minimum cut in the network {@code G}
@@ -45,6 +44,34 @@ public class FordFulkerson {
         // check optimality conditions
         assert check(G, s, t);
     }
+
+    public void calculateNewValue(FlowNetwork G, int s, int t) {
+        V = G.V();
+        validate(s);
+        validate(t);
+
+        // while there exists an augmenting path, use it
+        value = excess(G, t);
+        while (hasAugmentingPath(G, s, t)) {
+
+            // compute bottleneck capacity
+            double bottle = Double.POSITIVE_INFINITY;
+            for (int v = t; v != s; v = edgeTo[v].other(v)) {
+                bottle = Math.min(bottle, edgeTo[v].residualCapacityTo(v));
+            }
+
+            // augment flow
+            for (int v = t; v != s; v = edgeTo[v].other(v)) {
+                edgeTo[v].addResidualFlowTo(v, bottle);
+            }
+
+            value += bottle;
+        }
+
+        // check optimality conditions
+        assert check(G, s, t);
+    }
+
 
     /**
      * Returns the value of the maximum flow.

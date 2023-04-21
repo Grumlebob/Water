@@ -6,7 +6,7 @@ public class FlowNetwork {
     private final int V;
     private int E;
 
-    private List<List<FlowEdge>> adj2D = new ArrayList<List<FlowEdge>>();
+    public List<List<FlowEdge>> adj2D = new ArrayList<List<FlowEdge>>();
 
     public FlowNetwork(int V) {
         if (V < 0) throw new IllegalArgumentException("Number of vertices in a Graph must be non-negative");
@@ -26,7 +26,7 @@ public class FlowNetwork {
     }
 
 
-    public void addEdgeToUndirectedGraph(int tailVertex, int headVertex, double capacity) {
+    public void addOrUpdateEdgeToUndirectedGraph(int tailVertex, int headVertex, double capacity) {
         var oneDirection = new FlowEdge(tailVertex, headVertex, capacity);
         var otherDirection = new FlowEdge(headVertex, tailVertex, capacity);
         //Check if the edge already exists, if so update the capacity
@@ -34,6 +34,10 @@ public class FlowNetwork {
             if (e.to() == tailVertex && e.from() == headVertex) {
                 e.capacity = capacity;
                 adj2D.get(headVertex).get(tailVertex).capacity = capacity;
+                if (e.flow > capacity) {
+                    e.flow = capacity;
+                    adj2D.get(headVertex).get(tailVertex).flow = 0;
+                }
                 return;
             }
         }
