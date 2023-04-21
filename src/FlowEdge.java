@@ -65,6 +65,16 @@ public class FlowEdge {
         }
     }
 
+    @Override
+    public int hashCode() {
+        return this.from() * 1000000 + this.to();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o.hashCode() == this.hashCode();
+    }
+
     public String toString() {
         return v + "->" + w + " " + flow + "/" + capacity;
     }

@@ -42,7 +42,6 @@ public class FordFulkerson {
 
             for (FlowEdge e : G.adj(v)) {
                 int w = e.other(v);
-
                 // if residual capacity from v to w
                 if (e.residualCapacityTo(w) > 0) {
                     if (!marked[w]) {
@@ -60,7 +59,8 @@ public class FordFulkerson {
     private int excess(FlowNetwork G, int v) {
         int excess = 0;
         for (FlowEdge e : G.adj(v)) {
-            if (v == e.from()) excess -= e.flow();
+            if (v == e.from()) 
+                excess -= e.flow();
             else excess += e.flow();
         }
         return excess;

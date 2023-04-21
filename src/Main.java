@@ -24,7 +24,7 @@ public class Main {
             int pipeA = Integer.parseInt(pipeInput[0]);
             int pipeB = Integer.parseInt(pipeInput[1]);
             int pipeCapacity = Integer.parseInt(pipeInput[2]);
-            flowNetwork.addOrUpdateEdgeToUndirectedGraph(pipeA, pipeB, pipeCapacity);
+            flowNetwork.addOrUpdateEdgeToUndirectedGraphWorking(pipeA, pipeB, pipeCapacity);
         }
 
         //Print initial maxflow
@@ -37,7 +37,7 @@ public class Main {
             int improvementA = Integer.parseInt(ImprovementInput[0]);
             int improvementB = Integer.parseInt(ImprovementInput[1]);
             int improvementCapacity = Integer.parseInt(ImprovementInput[2]);
-            flowNetwork.addOrUpdateEdgeToUndirectedGraph(improvementA, improvementB, improvementCapacity);
+            flowNetwork.addOrUpdateEdgeToUndirectedGraphWorking(improvementA, improvementB, improvementCapacity);
             FordFulkerson newff = new FordFulkerson(flowNetwork, source, sink);
             kattisResult.append(newff.maxFlow()).append("\n");
         }

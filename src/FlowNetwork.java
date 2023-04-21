@@ -1,11 +1,14 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class FlowNetwork {
     private final int V;
     private int E;
+    private HashMap<FlowEdge, FlowEdge> edges;
     public List<List<FlowEdge>> adj2D = new ArrayList<List<FlowEdge>>();
     public FlowNetwork(int V) {
+        edges = new HashMap<>();
         if (V < 0) throw new IllegalArgumentException("Number of vertices in a Graph must be non-negative");
         this.V = V;
         this.E = 0;
@@ -18,21 +21,26 @@ public class FlowNetwork {
     }
 
     public void addOrUpdateEdgeToUndirectedGraphWorking(int tailVertex, int headVertex, int capacity) {
-        var oneDirection = new FlowEdge(tailVertex, headVertex, capacity);
-        var otherDirection = new FlowEdge(headVertex, tailVertex, capacity);
         //Check if the edge already exists, if so update the capacity
-        for (FlowEdge e : adj2D.get(tailVertex)) {
-            if (e.to() == tailVertex && e.from() == headVertex) {
-                e.capacity += capacity;
-                adj2D.get(headVertex).get(tailVertex).capacity += capacity;
-                return;
+        var newEdge = new FlowEdge(tailVertex, headVertex, capacity);
+        var existing = edges.get(newEdge);
+        if (existing == null) {
+            addEdge(newEdge);
+            addEdge(new FlowEdge(headVertex, tailVertex, capacity));
+        }
+        else {
+            existing.capacity += capacity;
+            for (FlowEdge e : adj2D.get(headVertex)) {
+                if (e.to() == tailVertex) {
+                    e.capacity += capacity;
+                    return;
+                }
             }
         }
-        addEdge(oneDirection);
-        addEdge(otherDirection);
+        
     }
 
-    public void addOrUpdateEdgeToUndirectedGraph(int tailVertex, int headVertex, int capacity) {
+    /*public void addOrUpdateEdgeToUndirectedGraph(int tailVertex, int headVertex, int capacity) {
         var oneDirection = new FlowEdge(tailVertex, headVertex, capacity);
         var otherDirection = new FlowEdge(headVertex, tailVertex, capacity);
         boolean found = false;
@@ -54,9 +62,10 @@ public class FlowNetwork {
                 }
             }
         }
-    }
+    }*/
 
     public void addEdge(FlowEdge e) {
+        edges.put(e, e);
         int v = e.from();
         int w = e.to();
         adj2D.get(v).add(e);
