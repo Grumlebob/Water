@@ -1,18 +1,24 @@
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 public class FordFulkerson {
-    public int V;          // number of vertices
-    public boolean[] marked;     // marked[v] = true iff s->v path in residual graph
-    public FlowEdge[] edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
-    public int value;         // current value of max flow
+    private final int V;             // number of vertices
+    private boolean[] marked;       // marked[v] = true iff s->v path in residual graph
+    private FlowEdge[] edgeTo;      // edgeTo[v] = last edge on shortest residual s->v path
+    private int value;              // current value of max flow
+
+    private final FlowNetwork G;    // flow network
 
     public FordFulkerson(FlowNetwork G, int s, int t) {
-        V = G.V();
+        this.G = G;
+        this.V = G.V();
         if (s == t) throw new IllegalArgumentException("Source equals sink");
 
         // while there exists an augmenting path, use it
-        value = excess(G, s);
-        while (hasAugmentingPath(G, s, t)) {
+        value = excess(s);
+        while (hasAugmentingPath(s, t)) {
             // compute bottleneck capacity
-            int bottle = bottleneck(G, s, t);
+            int bottle = bottleneck(s, t);
             // augment flow
             for (int v = t; v != s; v = edgeTo[v].other(v)) {
                 edgeTo[v].addResidualFlowTo(v, bottle);
@@ -26,16 +32,19 @@ public class FordFulkerson {
         return value;
     }
 
-    private boolean hasAugmentingPath(FlowNetwork G, int s, int t) {
-        edgeTo = new FlowEdge[G.V()];
-        marked = new boolean[G.V()];
+    public void addEdge(int u, int v, int capacity) {
+        G.addEdge(new FlowEdge(u, v, capacity));
+    }
 
-        ArrayQueue<Integer> queue = new ArrayQueue<>(G.V());
-        queue.enqueue(s);
+    private boolean hasAugmentingPath(int s, int t) {
+        edgeTo = new FlowEdge[V];
+        marked = new boolean[V];
+
+        Queue<Integer> queue = new ArrayDeque<>(V);
+        queue.offer(s);
         marked[s] = true;
-
         while (!queue.isEmpty()) {
-            int v = queue.dequeue();
+            int v = queue.poll();
 
             for (FlowEdge e : G.adj(v)) {
                 int w = e.other(v);
@@ -45,7 +54,7 @@ public class FordFulkerson {
                     edgeTo[w] = e;
                     marked[w] = true;
                     if (w == t) return true; // stop BFS as soon as path to t is found
-                    queue.enqueue(w);
+                    queue.offer(w);
                 }
             }
         }
@@ -53,8 +62,7 @@ public class FordFulkerson {
         return false;
     }
 
-
-    private int excess(FlowNetwork G, int v) {
+    private int excess(int v) {
         int excess = 0;
         for (FlowEdge e : G.adj(v)) {
             if (v == e.from()) excess += e.flow();
@@ -63,7 +71,7 @@ public class FordFulkerson {
         return excess;
     }
 
-    private int bottleneck(FlowNetwork G, int s, int t) {
+    private int bottleneck(int s, int t) {
         int bottle = Integer.MAX_VALUE;
         for (int v = t; v != s; v = edgeTo[v].other(v)) {
             int residualCapacity = edgeTo[v].residualCapacityTo(v);

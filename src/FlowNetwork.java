@@ -17,21 +17,6 @@ public class FlowNetwork {
         return V;
     }
 
-    public void addOrUpdateEdgeToUndirectedGraphWorking(int tailVertex, int headVertex, int capacity) {
-        var oneDirection = new FlowEdge(tailVertex, headVertex, capacity);
-        var otherDirection = new FlowEdge(headVertex, tailVertex, capacity);
-        //Check if the edge already exists, if so update the capacity
-        for (FlowEdge e : adj2D.get(tailVertex)) {
-            if (e.to() == tailVertex && e.from() == headVertex) {
-                e.capacity += capacity;
-                adj2D.get(headVertex).get(tailVertex).capacity += capacity;
-                return;
-            }
-        }
-        addEdge(oneDirection);
-        addEdge(otherDirection);
-    }
-
     public void addOrUpdateEdgeToUndirectedGraph(int tailVertex, int headVertex, int capacity) {
         var oneDirection = new FlowEdge(tailVertex, headVertex, capacity);
         var otherDirection = new FlowEdge(headVertex, tailVertex, capacity);
